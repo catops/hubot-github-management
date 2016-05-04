@@ -10,7 +10,7 @@ init = ({user, repo, token, endpoint}, cb) ->
       console.error err if err
       exec "git pull #{templateRepo}", {cwd: path}, (err) ->
         console.error err if err
-        exec "git push https://#{token}@#{endpoint}/#{user}/#{repo}.git master", {cwd: path}, (err, stdout, stderr) ->
+        exec "git push https://#{token}:x-oauth-basic@#{endpoint}/#{user}/#{repo}.git master", {cwd: path}, (err, stdout, stderr) ->
           cleanup()
           return cb(err) if err
           cb null, stdout or stderr
