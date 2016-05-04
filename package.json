@@ -1,0 +1,45 @@
+{
+  "name": "hubot-github-management",
+  "description": "A Hubot script for managing your GitHub organization's repositories and teams.",
+  "version": "1.0.0",
+  "author": "Chris Contolini <contolini@users.noreply.github.com>",
+  "license": "CC0",
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "catops",
+    "github"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/catops/hubot-github-management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/catops/hubot-github-management/issues"
+  },
+  "dependencies": {
+    "coffee-script": "~1.10",
+    "github": "^0.2.4",
+    "hubot": "^2.18.0",
+    "lodash": "^4.11.2",
+    "tmp": "0.0.28"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-test": "~0.12.7",
+    "grunt-release": "~0.13.1",
+    "hubot": "^2.18.0",
+    "hubot-mock-adapter": "^1.0.0",
+    "hubot-mock-adapter-helper": "0.0.1",
+    "matchdep": "~1.0.1",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
+  },
+  "main": "index.coffee",
+  "scripts": {
+    "test": "grunt test"
+  }
+}
