@@ -28,7 +28,7 @@ TextMessage = require('hubot').TextMessage
 module.exports = (robot) ->
 
   return robot.logger.error "Please set a GitHub API token at HUBOT_GITHUB_ORG_TOKEN" if not process.env.HUBOT_GITHUB_ORG_TOKEN
-  return robot.logger.error "Please specify a GitHub organization name at HUBOT_GITHUB_ORG_TOKEN" if not process.env.HUBOT_GITHUB_ORG_NAME
+  return robot.logger.error "Please specify a GitHub organization name at HUBOT_GITHUB_ORG_NAME" if not process.env.HUBOT_GITHUB_ORG_NAME
 
   org.init()
 

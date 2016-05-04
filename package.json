@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "coffee-script": "~1.10",
-    "github": "^0.2.4",
+    "github": "ludovicderochethales/node-github#8b9740669ff0cc34c8cc27c95da144e1c216559e",
     "hubot": "^2.18.0",
     "lodash": "^4.11.2",
     "tmp": "0.0.28"
