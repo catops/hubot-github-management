@@ -6,3 +6,5 @@ module.exports =
   repo: '📦'
   public: '🔓'
   private: '🔒'
+  fork: '🍴'
+  star: '⭐︎'

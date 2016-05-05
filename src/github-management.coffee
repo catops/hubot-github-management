@@ -9,6 +9,7 @@
 #
 # Commands:
 #   hubot github info - returns a summary of your organization
+#   hubot github info (team|repo) <team or repo name> - returns a summary of your organization
 #   hubot github list (teams|repos|members) - returns a list of members, teams or repos in your organization
 #   hubot github list public repos - returns a list of all public repos in your organization
 #   hubot github create team <team name> - creates a team with the following name
@@ -38,6 +39,7 @@ module.exports = (robot) ->
     message = """
       ```
       #{robot.name} github info - returns a summary of your organization
+      #{robot.name} github info (team|repo) <team or repo name> - returns a summary of your organization
       #{robot.name} github list (teams|repos|members) - returns a list of members, teams or repos in your organization
       #{robot.name} github list public repos - returns a list of all public repos in your organization
       #{robot.name} github create team <team name> - creates a team with the following name
@@ -50,7 +52,10 @@ module.exports = (robot) ->
     msg.send message
 
   robot.respond /(github|gh) info$/i, (msg) ->
-    org.summary msg
+    org.summary.all msg
+
+  robot.respond /(github|gh) info (team|repo) (\w.+)/i, (msg) ->
+    org.summary[msg.match[2]] msg, msg.match[3]
 
   robot.respond /(github|gh) list (team|member|repo)s?/i, (msg) ->
     cmd = "#{msg.match[2]}s" if not /s$/.test(msg.match[2])

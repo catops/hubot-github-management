@@ -73,6 +73,10 @@ describe 'github-management', ->
       messageHelper.sendMessage done, "hubot github create team #{fixtures.team}", (result) ->
         expect(result[0]).to.contain("`#{fixtures.team}` was successfully created")
 
+    it "successfully provides info of a team", (done) ->
+      messageHelper.sendMessage done, "hubot github info team #{fixtures.team}", (result) ->
+        expect(result[0]).to.contain("doesn't have any members.")
+
     it "fails to delete team if you're not an admin", (done) ->
       process.env.HUBOT_AUTH_ADMIN = []
       messageHelper.sendMessage done, "hubot github delete team #{fixtures.team}", (result) ->
@@ -122,3 +126,11 @@ describe 'github-management', ->
     it "successfully creates a repo", (done) ->
       messageHelper.sendMessage done, "hubot github create repo #{fixtures.repo}", (result) ->
         expect(result[0]).to.contain("#{icons.repo}")
+
+    it "successfully provides info of a repo", (done) ->
+      messageHelper.sendMessage done, "hubot github info repo #{fixtures.repo}", (result) ->
+        expect(result[0]).to.contain("#{icons.star} 0")
+
+    it "fails to provide info of a non-existent repo", (done) ->
+      messageHelper.sendMessage done, "hubot github info repo not-a-real-repo", (result) ->
+        expect(result[0]).to.contain("#{icons.failure} Not Found")

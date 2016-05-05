@@ -12,48 +12,72 @@ org =
   init: () ->
     github.authenticate type: "oauth", token: token
 
-  summary: (msg) ->
-    github.orgs.get org: organization, per_page: 100, (err, org) ->
-      github.orgs.getMembers org: organization, per_page: 100, (memberErr, members) ->
-        github.orgs.getTeams org: organization, per_page: 100, (teamErr, teams) ->
-          if err or memberErr or teamErr
-            msg.send "There was an error getting the details of the organization: #{organization}"
-          else
-            name = org.name or org.login
-            location = org.location or 'unknown'
-            message = """
-              #{icons.team} #{name}
-              - Location: #{location}
-              - Created: #{org.created_at}
-              - Public Repos: `#{org.public_repos}`
-              - Private Repos: `#{org.total_private_repos}`
-              - Total Repos: `#{org.public_repos + org.total_private_repos}`
-              - Members: `#{members.length}`
-              - Teams: `#{teams.length}`
-              - Collaborators: #{org.collaborators}
-              - Followers: #{org.followers}
-              - Following: #{org.following}
-              - Public Gists: #{org.public_gists}
-              - Private Gists: #{org.private_gists}
-              """
-            msg.send message
+  summary:
+    all: (msg) ->
+      github.orgs.get org: organization, per_page: 100, (err, org) ->
+        github.orgs.getMembers org: organization, per_page: 100, (memberErr, members) ->
+          github.orgs.getTeams org: organization, per_page: 100, (teamErr, teams) ->
+            if err or memberErr or teamErr
+              msg.send "There was an error getting the details of the organization: #{organization}"
+            else
+              name = org.name or org.login
+              location = org.location or 'unknown'
+              message = """
+                #{icons.team} #{name}
+                - Location: #{location}
+                - Created: #{org.created_at}
+                - Public Repos: `#{org.public_repos}`
+                - Private Repos: `#{org.total_private_repos}`
+                - Total Repos: `#{org.public_repos + org.total_private_repos}`
+                - Members: `#{members.length}`
+                - Teams: `#{teams.length}`
+                - Collaborators: #{org.collaborators}
+                - Followers: #{org.followers}
+                - Following: #{org.following}
+                - Public Gists: #{org.public_gists}
+                - Private Gists: #{org.private_gists}
+                """
+              msg.send message
+
+    team: (msg, teamName) ->
+      github.orgs.getTeams org: organization, per_page: 100, (err, res) ->
+        return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
+        team = (team for team in res when team.name is teamName)[0]
+        team.privacy = if team.privacy == 'secret' then icons.private else icons.public
+        github.orgs.getTeamMembers id: team.id, per_page: 100, (err, res) ->
+          return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
+          return msg.send "#{icons.team} Team #{team.name} (#{team.privacy}) doesn't have any members." if not res.length
+          members = ""
+          res.forEach (member) ->
+            members += "- #{icons.user} #{member.login}\n"
+          message = "#{icons.team} Team #{team.name} (#{team.privacy}) has the following members:\n#{members}"
+          msg.send message
+
+    repo: (msg, repoName) ->
+      github.repos.get user: organization, repo: repoName, per_page: 100, (err, repo) ->
+        return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
+        repo.privacy = if repo.private then icons.private else icons.public
+        repo.fork = if repo.fork then "#{icons.fork} " else ""
+        github.repos.getTeams user: organization, repo: repoName, per_page: 100, (err, teams) ->
+          return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
+          teamList = if not teams.length then "doesn't belong to any teams." else "belongs to the following teams:\n"
+          teams.forEach (team) ->
+            teamList += "- #{icons.team} #{team.name}\n"
+          message = "#{icons.repo} Repo #{repo.name} #{repo.fork}#{repo.privacy} #{icons.star} #{repo.stargazers_count} #{teamList}"
+          msg.send message
 
   list:
     teams: (msg) ->
       github.orgs.getTeams org: organization, per_page: 100, (err, res) ->
-        msg.send "There was an error fetching the teams for the organization: #{organization}" if err
-        if err and res.length == 0
-          console.error err
+        return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
         message = ""
         res.forEach (team) ->
-          message += "#{icons.team} #{team.name}\n"
+          message += "#{icons.team} #{team.name} (id: #{team.id})\n"
         msg.send message
 
     members: (msg, teamName) ->
       github.orgs.getMembers org: organization, per_page: 100, (err, res) ->
-        msg.send "There was an error fetching the memebers for the organization:#{organization}" if err
-        if err and res.length == 0
-          console.error err
+        return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
         message = ""
         res.forEach (user) ->
           message += "#{icons.user} #{user.login}\n"
@@ -74,8 +98,8 @@ org =
       github.repos.createFromOrg org: organization, name: repoName, private: repoStatus == "private", (err, repo) ->
         return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
         note = if process.env.HUBOT_GITHUB_REPO_TEMPLATE then ". Pre-populating it with template files..." else ""
-        msg.send "#{icons.repo} #{repo.name} (#{icons.private}) was created#{note}" unless err or !repo.private
-        msg.send "#{icons.repo} #{repo.name} (#{icons.public}) was created#{note}" unless err or repo.private
+        msg.send "#{icons.repo} #{repo.name} #{icons.private} was created#{note}" unless err or !repo.private
+        msg.send "#{icons.repo} #{repo.name} #{icons.public} was created#{note}" unless err or repo.private
         if process.env.HUBOT_GITHUB_REPO_TEMPLATE
           ospt {user: organization, repo: repo.name, token, endpoint: 'github.com'}, (err, data) ->
             console.error err if err
@@ -92,10 +116,10 @@ org =
         if team
           for repo in repoList.split ','
             github.orgs.addTeamRepo id: team.id, user: organization, repo: repo, (err, res) ->
-              msg.send "#{icons.repo} `#{repo}` could not be added to the team: #{team.name}" if err
-              msg.send "#{icons.repo} `#{repo}` was added to the team: #{team.name}" unless err
+              msg.send "#{icons.repo} Repo #{repo} could not be added to the team #{team.name}" if err
+              msg.send "#{icons.repo} Repo #{repo} was added to the team #{team.name}" unless err
         else
-          msg.send "#{icons.failure} Team `#{teamName}` does not exist."
+          msg.send "#{icons.failure} Team #{teamName} does not exist."
 
     members: (msg, memberList, teamName) ->
       github.orgs.getTeams org: organization, per_page: 100, (err, res) ->
