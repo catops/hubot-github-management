@@ -4,6 +4,7 @@ _ = require 'lodash'
 expect = chai.expect
 helper = require 'hubot-mock-adapter-helper'
 TextMessage = require('hubot/src/message').TextMessage
+icons = require '../src/lib/icons'
 
 chai.use require 'sinon-chai'
 
@@ -13,15 +14,6 @@ fixtures =
   user: 'mistersandwichwoman'
   team: 'team' + seed
   repo: 'repo' + seed
-
-icons =
-  success: '😸'
-  success: '😿'
-  team: '👪'
-  user: '🙋'
-  repo: '🍕'
-  public: '🔓'
-  private: '🔒'
 
 class Helper
   constructor: (@robot, @adapter, @user)->
@@ -84,7 +76,7 @@ describe 'github-management', ->
     it "fails to delete team if you're not an admin", (done) ->
       process.env.HUBOT_AUTH_ADMIN = []
       messageHelper.sendMessage done, "hubot github delete team #{fixtures.team}", (result) ->
-        expect(result[0]).to.contain("Only admins can `delete` teams.")
+        expect(result[0]).to.contain("Sorry, only admins")
 
     it "successfully deletes teams", (done) ->
       messageHelper.sendMessage done, "hubot github delete team #{fixtures.team}", (result) ->
@@ -109,7 +101,7 @@ describe 'github-management', ->
     it "fails to remove member if you're not an admin", (done) ->
       process.env.HUBOT_AUTH_ADMIN = []
       messageHelper.sendMessage done, "hubot github remove members #{fixtures.user} from team #{fixtures.team}", (result) ->
-        expect(result[0]).to.contain("Only admins can `remove` users from teams.")
+        expect(result[0]).to.contain("Sorry, only admins")
 
     it "successfully remove member", (done) ->
       messageHelper.sendMessage done, "hubot github remove members #{fixtures.user} from team #{fixtures.team}", (result) ->

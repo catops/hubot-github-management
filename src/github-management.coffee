@@ -5,6 +5,7 @@
 #   HUBOT_GITHUB_ORG_TOKEN - (required) Github access token. See https://help.github.com/articles/creating-an-access-token-for-command-line-use/.
 #   HUBOT_GITHUB_ORG_NAME - (required) Github organization name. The <org_name> in https://github.com/<org_name>/awesome-repo.
 #   HUBOT_GITHUB_REPO_TEMPLATE - (optional) A git repo that will be used as a template for new repos. E.g. https://github.com/cfpb/open-source-project-template.git
+#   HUBOT_GITHUB_ENTERPRISE_ENDPOINT - (optional) Set this
 #
 # Commands:
 #   hubot github info - returns a summary of your organization
@@ -23,6 +24,7 @@
 #   contolini
 
 org = require './lib/github'
+icons = require './lib/icons'
 TextMessage = require('hubot').TextMessage
 
 module.exports = (robot) ->
@@ -59,26 +61,26 @@ module.exports = (robot) ->
 
   robot.respond /(github|gh) create (team|repo) (\w.+)/i, (msg) ->
     unless robot.auth.isAdmin msg.envelope.user
-      msg.send "Only admins can use `create` commands"
+      msg.send "#{icons.failure} Sorry, only admins can use `create` commands"
     else
       org.create[msg.match[2]] msg, msg.match[3].split('/')[0], msg.match[3].split('/')[1]
 
   robot.respond /(github|gh) add (member|user|repo)s? (\w.+) to team (\w.+)/i, (msg) ->
     unless robot.auth.isAdmin msg.envelope.user
-      msg.send "Only admins can use `add` commands"
+      msg.send "#{icons.failure} Sorry, only admins can use `add` commands"
     else
       cmd = if /(member|user)/.test msg.match[2] then 'members' else 'repos'
       org.add[cmd] msg, msg.match[3], msg.match[4]
 
   robot.respond /(github|gh) remove (member|user|repo)s? (\w.+) from team (\w.+)/i, (msg) ->
     unless robot.auth.isAdmin msg.envelope.user
-      msg.send "Only admins can `remove` users from teams."
+      msg.send "#{icons.failure} Sorry, only admins can `remove` users from teams."
     else
       cmd = if /(member|user)/.test msg.match[2] then 'members' else 'repos'
       org.remove[cmd] msg, msg.match[3], msg.match[4]
 
   robot.respond /(github|gh) (delete|remove) team (\w.+)/, (msg) ->
     unless robot.auth.isAdmin msg.envelope.user
-      msg.send "Only admins can `delete` teams."
+      msg.send "#{icons.failure} Sorry, only admins can `delete` teams."
     else
       org.delete.team msg, msg.match[3]
