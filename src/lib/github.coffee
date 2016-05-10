@@ -46,11 +46,11 @@ org =
         team.privacy = if team.privacy == 'secret' then icons.private else icons.public
         github.orgs.getTeamMembers id: team.id, per_page: 100, (err, res) ->
           return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
-          return msg.send "#{icons.team} Team #{team.name} (#{team.privacy}) doesn't have any members." if not res.length
+          return msg.send "#{icons.team} Team #{team.name} #{team.privacy} doesn't have any members." if not res.length
           members = ""
           res.forEach (member) ->
             members += "- #{icons.user} #{member.login}\n"
-          message = "#{icons.team} Team #{team.name} (#{team.privacy}) has the following members:\n#{members}"
+          message = "#{icons.team} Team #{team.name} #{team.privacy} has the following members:\n#{members}"
           msg.send message
 
     repo: (msg, repoName) ->

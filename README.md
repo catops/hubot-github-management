@@ -4,6 +4,8 @@
 
 See [`src/github-management.coffee`](src/github-management.coffee) for full documentation.
 
+![hubot-github-management screenshot](screenshot.png)
+
 ## Installation
 
 In hubot project repo, run:
