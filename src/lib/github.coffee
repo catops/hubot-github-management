@@ -90,12 +90,12 @@ org =
 
   create:
     team: (msg, teamName) ->
-      github.orgs.createTeam org: organization, name: teamName, permission: "push", (err, team) ->
+      github.orgs.createTeam org: organization, name: teamName, (err, team) ->
         msg.send "There was an error and #{icons.team} `#{teamName}` was not created" if err
         msg.send "#{icons.team} `#{team.name}` was successfully created" unless err
 
     repo: (msg, repoName, repoStatus) ->
-      github.repos.createFromOrg org: organization, name: repoName, private: repoStatus == "private", (err, repo) ->
+      github.repos.createForOrg org: organization, name: repoName, private: repoStatus == "private", (err, repo) ->
         return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
         note = if process.env.HUBOT_GITHUB_REPO_TEMPLATE then ". Pre-populating it with template files..." else ""
         msg.send "#{icons.repo} #{repo.name} #{icons.private} was created#{note}" unless err or !repo.private
@@ -150,7 +150,7 @@ org =
         team = _.find(res, { name: teamName })
         if team
           for member in memberList.split ','
-            github.orgs.deleteTeamMember id: team.id, user: member, (err, res) ->
+            github.orgs.removeTeamMembership id: team.id, user: member, (err, res) ->
               msg.send "#{icons.user} `#{member}` could not be removed from #{icons.team} #{teamName}" if err
               msg.send "#{icons.user} `#{member}` was removed from #{icons.team} #{teamName}" unless err
 
