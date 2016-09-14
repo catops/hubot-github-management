@@ -115,7 +115,7 @@ org =
         team = _.find(res, { name: teamName })
         if team
           for repo in repoList.split ','
-            github.orgs.addTeamRepo id: team.id, user: organization, repo: repo, (err, res) ->
+            github.orgs.addTeamRepo id: team.id, org: organization, repo: repo, permission: 'admin', (err, res) ->
               msg.send "#{icons.repo} Repo #{repo} could not be added to the team #{team.name}" if err
               msg.send "#{icons.repo} Repo #{repo} was added to the team #{team.name}" unless err
         else
