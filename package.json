@@ -18,7 +18,7 @@
     "url": "https://github.com/catops/hubot-github-management/issues"
   },
   "dependencies": {
-    "coffee-script": "~1.10",
+    "coffee-script": "~1.12.3",
     "github": "ludovicderochethales/node-github#8b9740669ff0cc34c8cc27c95da144e1c216559e",
     "hubot": "^2.18.0",
     "lodash": "^4.11.2",
