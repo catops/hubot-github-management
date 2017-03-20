@@ -35,7 +35,7 @@
     "hubot-mock-adapter-helper": "0.0.1",
     "matchdep": "~1.0.1",
     "mocha": "^2.4.5",
-    "sinon": "^1.17.4",
+    "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0"
   },
   "main": "index.coffee",
