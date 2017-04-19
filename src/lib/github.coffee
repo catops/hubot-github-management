@@ -54,11 +54,11 @@ org =
           msg.send message
 
     repo: (msg, repoName) ->
-      github.repos.get user: organization, repo: repoName, per_page: 100, (err, repo) ->
+      github.repos.get owner: organization, repo: repoName, per_page: 100, (err, repo) ->
         return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
         repo.privacy = if repo.private then icons.private else icons.public
         repo.fork = if repo.fork then "#{icons.fork} " else ""
-        github.repos.getTeams user: organization, repo: repoName, per_page: 100, (err, teams) ->
+        github.repos.getTeams owner: organization, repo: repoName, per_page: 100, (err, teams) ->
           return msg.send "#{icons.failure} #{JSON.parse(err).message}" if err
           teamList = if not teams.length then "doesn't belong to any teams." else "belongs to the following teams:\n"
           teams.forEach (team) ->
@@ -84,9 +84,9 @@ org =
         msg.send message
 
     repos: (msg, repoType="all") ->
-      github.repos.getFromOrg org: organization, type: repoType, per_page: 100, (err, res) ->
+      github.repos.getForOrg org: organization, type: repoType, per_page: 100, (err, res) ->
         msg.send "There was an error fetching all the repos for the organization: #{organization}" if err
-        msg.send "#{icons.repo} #{repo.name} - #{repo.description}" for repo in res unless err and res.length == 0
+        msg.send "#{icons.repo} #{repo.name} - #{repo.description or "*no description*"}" for repo in res unless err and res.length == 0
 
   create:
     team: (msg, teamName) ->
@@ -127,7 +127,7 @@ org =
         team = _.find(res, { name: teamName })
         if team
           for member in memberList.split ','
-            github.orgs.addTeamMember id: team.id, user: member, (err, res) ->
+            github.orgs.addTeamMembership id: team.id, username: member, (err, res) ->
               msg.send "#{icons.user} `#{member}` could not be added to #{icons.team} #{team.name}" if err
               msg.send "#{icons.user} `#{member}` was added to #{icons.team} #{team.name}" unless err
         else
@@ -140,7 +140,7 @@ org =
         team = _.find(res, { name: teamName })
         if team
           for repository in repoList.split ','
-            github.orgs.deleteTeamRepo id: team.id, user: organization, repo: repository, (err, res) ->
+            github.orgs.deleteTeamRepo id: team.id, owner: organization, repo: repository, (err, res) ->
               msg.send "#{icons.repo} `#{repository.name}` could not be removed from the #{icons.team} #{teamName}" if err
               msg.send "#{icons.repo} `#{repository.name}` was removed from #{icons.team} #{teamName}" unless err
 
@@ -150,7 +150,7 @@ org =
         team = _.find(res, { name: teamName })
         if team
           for member in memberList.split ','
-            github.orgs.removeTeamMembership id: team.id, user: member, (err, res) ->
+            github.orgs.removeTeamMembership id: team.id, username: member, (err, res) ->
               msg.send "#{icons.user} `#{member}` could not be removed from #{icons.team} #{teamName}" if err
               msg.send "#{icons.user} `#{member}` was removed from #{icons.team} #{teamName}" unless err
 

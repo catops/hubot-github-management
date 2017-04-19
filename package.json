@@ -18,18 +18,18 @@
     "url": "https://github.com/catops/hubot-github-management/issues"
   },
   "dependencies": {
-    "coffee-script": "~1.10",
-    "github": "^3.0.0",
+    "coffee-script": "~1.12",
+    "github": "^8.2.1",
     "hubot": "^2.18.0",
     "lodash": "^4.11.2",
-    "tmp": "0.0.28"
+    "tmp": "0.0.31"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-mocha-test": "~0.12.7",
-    "grunt-release": "~0.13.1",
+    "grunt-mocha-test": "~0.13.2",
+    "grunt-release": "~0.14.0",
     "hubot": "^2.18.0",
     "hubot-mock-adapter": "^1.0.0",
     "hubot-mock-adapter-helper": "0.0.1",

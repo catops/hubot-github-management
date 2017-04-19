@@ -79,6 +79,7 @@ describe 'github-management', ->
 
     it "fails to delete team if you're not an admin", (done) ->
       process.env.HUBOT_AUTH_ADMIN = []
+      process.env.HUBOT_GITHUB_REQUIRE_ADMIN = true
       messageHelper.sendMessage done, "hubot github delete team #{fixtures.team}", (result) ->
         expect(result[0]).to.contain("Sorry, only admins")
 
@@ -104,6 +105,7 @@ describe 'github-management', ->
 
     it "fails to remove member if you're not an admin", (done) ->
       process.env.HUBOT_AUTH_ADMIN = []
+      process.env.HUBOT_GITHUB_REQUIRE_ADMIN = true
       messageHelper.sendMessage done, "hubot github remove members #{fixtures.user} from team #{fixtures.team}", (result) ->
         expect(result[0]).to.contain("Sorry, only admins")
 

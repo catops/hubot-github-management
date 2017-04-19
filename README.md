@@ -24,6 +24,7 @@ Then add **hubot-github-management** to your `external-scripts.json`:
 HUBOT_GITHUB_ORG_TOKEN - (required) Github access token. See https://help.github.com/articles/creating-an-access-token-for-command-line-use/.
 HUBOT_GITHUB_ORG_NAME - (required) Github organization name. The <org_name> in https://github.com/<org_name>/awesome-repo.
 HUBOT_GITHUB_REPO_TEMPLATE - (optional) A git repo that will be used as a template for new repos. E.g. https://github.com/cfpb/open-source-project-template.git
+HUBOT_GITHUB_REQUIRE_ADMIN - (optional) Set this to true to restrict create, delete and add commands to Hubot admins.
 ```
 
 ## Contributing
